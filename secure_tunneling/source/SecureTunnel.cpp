@@ -765,11 +765,10 @@ namespace Aws
                          */
                         struct aws_byte_buf payload_buf;
                         AWS_ZERO_STRUCT(payload_buf);
-                        payload_buf.allocator = NULL;
-                        payload_buf.buffer = message->payload->ptr;
-                        payload_buf.len = message->payload->len;
-                        payload_buf.capacity = message->payload->len;
+                        aws_byte_buf_init_copy_from_cursor(
+                            &payload_buf, secureTunnel->m_allocator, *(message->payload));
                         secureTunnel->m_OnDataReceive(payload_buf);
+                        aws_byte_buf_clean_up(&payload_buf);
                         return;
                     }
                 }
